@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  .header
+    h1= title
+    .right #[label(for="submit-settings") сохранить] / #[a(href="/settings") сбросить]
+  form(class="form-table" method="POST" action="/settings")
+    table: tbody
+      tr(class=(apikey? "" : "hidden"))
+        td: span.label Ключ API
+        td: input(type="password" name="apikey" autocomplete="off")
+        td: span.label Для сохранения изменений требуется ключ доступа к API
+      -lastgroup = "none"
+      each setting in settings
+        if (lastgroup != setting.group)
+          case setting.group
+            when "primary"
+              tr: td(colspan=3 class="group") Основные параметры системы
+            when "process"
+              tr: td(colspan=3 class="group") Дополнительные обработки
+            when "finance"
+              tr: td(colspan=3 class="group") Обработка сводных счетов-реестров
+            when "mail"
+              tr: td(colspan=3 class="group") Уведомления по электронной почте
+            when "notice"
+              tr: td(colspan=3 class="group") Уведомления на дополнительные адреса
+        tr
+          td: span.label= setting.name
+          td
+            if setting.type == "toggle"
+              select(name=setting.key value=setting.value)
+                option(value="1" selected=(setting.value == true)) Да
+                option(value="0" selected=(setting.value == false)) Нет
+            else
+              input(type=setting.type name=setting.key autocomplete="off" value=setting.value)
+          td: span.label= setting.description
+        -lastgroup = setting.group
+    input(type="submit" id="submit-settings" value="Сохранить" class="hidden")

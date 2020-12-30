@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  .header
+    h1= title
+    .right
+      label(for="submit-save") сохранить
+      if sender.code != "NEW"
+        |  / #[label(for="submit-delete") удалить]
+  form(class="form-table" method="POST")
+    table: tbody
+      tr(class=(apikey? "" : "hidden"))
+        td: span.label Ключ API
+        td: input(type="password" name="apikey" autocomplete="off")
+        td: span.label Для сохранения изменений требуется ключ доступа к API
+      tr: td(colspan=3 class="group") Основные параметры
+      tr
+        td: span.label Статус
+        td: select(name="status" value=sender.status)
+          option(value="1" selected=(sender.status == 1)) Активен
+          option(value="0" selected=(sender.status == 0)) Отключен
+        td: span.label 
+      tr
+        td: span.label Номер
+        td: input(type="number" name="num" min="0" max="99" autocomplete="off" value=sender.num)
+        td: span.label Номер для использования в имени файлов
+      tr
+        td: span.label Имя
+        td: input(type="text" name="name" autocomplete="off" value=sender.name)
+        td: span.label Имя отправителя
+      tr
+        td: span.label Папка
+        td: input(type="text" name="dir" autocomplete="off" value=sender.dir)
+        td: span.label Папка для мониторинга (в папке будут созданы подпапки Входящие и Исходящие)
+      tr
+        td: span.label Филиал
+        td: input(type="text" name="dept" autocomplete="off" value=sender.dept)
+        td: span.label Код филиала для внешних отчетов (интеграция с node-hospital)
+      tr: td(colspan=3 class="group") Допустимые типы реестров
+      each typ in types
+        tr
+          td: span.label= typ.code+" "+typ.short
+          td(colspan=2) #[input(type="checkbox" name=typ.code value="True" checked=sender[typ.code])] #[span.label= typ.full]
+    input(type="text" name="code" value=sender.code class="hidden")
+    button(id="submit-save" formaction="/senders/save" class="hidden")
+    button(id="submit-delete" formaction="/senders/delete" class="hidden")

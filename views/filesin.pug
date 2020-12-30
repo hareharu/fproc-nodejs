@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  .header
+    h1= title
+  p Файлы полученные в ответ на реестр #{name}
+  form(method="POST")
+    table
+      thead: tr
+        th Дата получения
+        th Имя файла
+        th Тип ответа
+        th Скачать #[input(type="password" name="apikey" autocomplete="off" placeholder="Ключ API" class=(apikey? "" : "hidden"))]
+      tbody: each file in files
+        tr
+          td=file.date_in
+          td=file.name_in
+          td=file.protocol
+          td
+            if (file.down_protocol)
+              label(for="submit-protocol-"+file.id_in) протокол
+              button(id="submit-protocol-"+file.id_in formaction="/api/download/protocol/"+file.down_protocol class="hidden")
+            else
+              |протокол
+            |
+            |/ 
+            if (file.down_recieved)
+              label(for="submit-recieved-"+file.id_in) ответный реестр
+              button(id="submit-recieved-"+file.id_in formaction="/api/download/recieved/"+file.down_recieved class="hidden")
+            else
+              |ответный реестр
+            |
+            |/ 
+            if (file.down_promed)
+              label(for="submit-promed-"+file.id_in) для промед
+              button(id="submit-promed-"+file.id_in formaction="/api/download/promed/"+file.down_promed class="hidden")
+            else
+              |для промед

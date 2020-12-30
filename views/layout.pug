@@ -1,0 +1,10 @@
+doctype html
+html
+  head
+    title FileProcessor / #{title}
+    link(rel="shortcut icon" href="/icon.png")
+    link(rel="stylesheet" href="/style.css")
+  body
+    if !version
+      a(href="/"+(back? back : "")): .left.back
+    block content

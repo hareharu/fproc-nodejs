@@ -1,0 +1,161 @@
+:root {
+  --gray: #dcdde1;
+  --red: #e84118;
+  --blue: #00a8ff;
+  --green: #4cd137;
+  --yellow: #e1b12c;
+}
+
+body {
+  padding: 20px 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: var(--blue);
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 25px;
+  width: 100%;
+}
+
+table thead th {
+  text-align: left;
+  border-bottom: solid 2px var(--gray);
+}
+
+table tbody td {
+  border-top: solid 1px var(--gray);
+}
+
+table td {
+  padding: 2px 10px 2px 5px;
+}
+
+table tbody td label {
+  color: var(--blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.form-table table {
+  margin-top: unset;
+  width: unset;
+}
+
+.form-table table tbody td {
+  border-top: none;
+}
+
+.form-table table span, .form-table table input, .form-table table select {
+  padding: 1px;
+}
+
+.form-table table input {
+  width: 250px;
+}
+
+.form-table table select {
+  width: 256px;
+}
+
+.form-table table input[type=checkbox] {
+  width: unset;
+}
+
+.form-table table .group {
+  padding: 8px 2px 2px 2px;
+  border-bottom: solid 1px var(--gray);
+}
+
+.hidden {
+  display: none;
+}
+
+.menu {
+  margin: 35px 0px;
+}
+
+.menu ul {
+  list-style: none;
+}
+
+.header {
+  display: flex;
+}
+
+.right {
+  align-self: center;
+  padding-left: 30px;
+}
+
+.right label {
+  color: var(--blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.left {
+  position: absolute;
+  left: 30px;
+  top: 60px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.back {
+  border: solid var(--blue);
+  border-width: 0 3px 3px 0;
+  padding: 3px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.control {
+  position: absolute;
+  margin-top: 3px;
+  left: 35px;
+  cursor: pointer;
+}
+
+.start {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-left: 10px solid var(--blue);
+  border-bottom: 5px solid transparent;
+}
+
+.stop {
+  width: 10px;
+  height: 10px;
+  background: var(--blue);
+}
+
+.process-true:after {
+  color: var(--green);
+  content: " работает";
+}
+
+.process-false:after {
+  color: var(--red);
+  content: " остановлена";
+}
+
+.cell-red {
+  color: var(--red);
+}
+
+.cell-green {
+  color: var(--green);
+}
+
+.cell-blue {
+  color: var(--blue);
+}
+
+.cell-yellow {
+  color: var(--yellow);
+}

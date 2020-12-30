@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .header
+    h1= title
+    .right: a(href="/senders/edit/new") создать
+  p Чтобы изменить параметры отправителя нажмите на его имя в таблице
+  table
+    thead: tr
+      th Статус
+      th Номер
+      th Имя
+      th Папка
+      th Типы файлов
+    tbody: each sender in senders
+      tr
+        td(class="cell-"+sender.rowcolor)=sender.statusname
+        td=sender.num
+        td: a(href="/senders/edit/"+sender.code.toLowerCase()) #{sender.name}
+        td=sender.dir
+        td=sender.types

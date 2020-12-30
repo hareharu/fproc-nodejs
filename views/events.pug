@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  .header
+    h1= title
+    .right #[a(href="/events/"+dates.today) сегодня] / #[a(href="/events/"+dates.yesterday) вчера] / #[a(href="/events/"+dates.lastweek+"/"+dates.today) неделя]
+  if date1 == date2
+    p События зарегистрированные #{date1}
+  else
+    p События зарегистрированные за период c #{date1} по #{date2}
+  table
+    thead: tr
+      th Тип
+      th Дата
+      th Функция
+      th Событие
+      th Описание
+    tbody: each event in events
+      tr
+        td(class="cell-"+event.rowcolor)=event.type
+        td=event.stamp
+        td=event.funcname
+        td=event.message
+        td=event.details

@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  .header
+    h1= title
+    .right #[a(href="/files/"+dates.today) сегодня] / #[a(href="/files/"+dates.yesterday) вчера] / #[a(href="/files/"+dates.lastweek+"/"+dates.today) неделя]
+  if date1 == date2
+    p Файлы отправленные #{date1}
+  else
+    p Файлы отправленные за период c #{date1} по #{date2}
+  table
+    thead: tr
+      th Тип
+      th Отправитель
+      th Имя файла
+      th Дата формирования
+      th Имя исходящего файла
+      th Дата отправки
+      th Статус
+    tbody: each file in files
+      tr
+        td=file.type
+        td=file.sender
+        td=file.name_old
+        td=file.date_old
+        td
+          if (file.statuscode == 'RE_DB' || file.statuscode == 'RE_DE' || file.statuscode == 'RE_ER')
+            a(href="/files/in/"+file.id_out+path)=file.name_out
+          else
+            =file.name_out
+        td=file.date_send
+        td(class="cell-"+file.rowcolor)=file.status

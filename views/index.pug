@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  .header
+    h1= title
+    .right: p v.#{version}
+  form(method="POST")
+    label(for="submit-inbox" class="control "+status.action.inbox)
+    p(class="process-"+status.active.inbox) Обработка входящих:
+    label(for="submit-senders" class="control "+status.action.senders)
+    p(class="process-"+status.active.senders) Обработка исходящих:
+    input(type="password" name="apikey" autocomplete="off" placeholder="Ключ API" class=(apikey? "" : "hidden"))
+    button(id="submit-inbox" formaction="/watchers/"+status.action.inbox+"/inbox" class="hidden")
+    button(id="submit-senders" formaction="/watchers/"+status.action.senders+"/senders" class="hidden")
+  .menu: ul
+    li: p: a(href="/files") Отправленные файлы
+    li: p: a(href="/events") Журнал событий
+    li: p: a(href="/senders") Отправители
+    li: p: a(href="/settings") Настройки
+  if status.folders.length > 0
+    p Папки с активным мониторингом:
+  ul: each folder in status.folders
+    li= folder
