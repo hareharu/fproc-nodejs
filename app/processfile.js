@@ -353,26 +353,19 @@ var sender = async (filefull, sender) => { // обработка исходящ�
       }   
     } else { // блок для всех остальных файлов (кроме направлений и госпитализаций)
       var ziptemp = path.join(path.parse(filetemp).dir, path.parse(filetemp).name);
-      if (filetype == 'H' && fileext == '.xml') { // обработка незапакованных реестров смп (для адиса)
-        fsys.create(ziptemp);
-        fsys.move(filetemp, path.join(ziptemp, path.parse(filetemp).base));
-        filenamesend = path.parse(filenamesend).name + '.zip';
-      } else {
-        fsys.extract(filetemp, ziptemp); // распаковываем архив
-        fsys.remove(filetemp); // удаляем исходный архив - он нам больше не нужен
-      }
+      fsys.extract(filetemp, ziptemp); // распаковываем архив
+      fsys.remove(filetemp); // удаляем исходный архив - он нам больше не нужен
       // обрабатывваем XML-файл с персональными данными (переименовываем, заменяем имена файлов внутри файла, сохраняем
-      if (filetype != 'H') {
-        fsys.move(path.join(ziptemp, filexmloldl), path.join(ziptemp, filexmlnewl));
-        var tempxmll = fsys.read(path.join(ziptemp, filexmlnewl));
-        tempxmll = tempxmll.replace(filexmlold.substring(0, filexmlold.length - 4), filexmlnew.substring(0, filexmlnew.length - 4));
-        tempxmll = tempxmll.replace(filexmloldl.substring(0, filexmloldl.length - 4), filexmlnewl.substring(0, filexmlnewl.length - 4));
-        fsys.write(path.join(ziptemp, filexmlnewl), tempxmll);
-      }
+      fsys.move(path.join(ziptemp, filexmloldl), path.join(ziptemp, filexmlnewl));
+      var tempxmll = fsys.read(path.join(ziptemp, filexmlnewl));
+      tempxmll = tempxmll.replace(filexmlold.substring(0, filexmlold.length - 4), filexmlnew.substring(0, filexmlnew.length - 4));
+      tempxmll = tempxmll.replace(filexmloldl.substring(0, filexmloldl.length - 4), filexmlnewl.substring(0, filexmlnewl.length - 4));
+      fsys.write(path.join(ziptemp, filexmlnewl), tempxmll);
       // обрабатывваем XML-файл с медицинскими данными
       fsys.move(path.join(ziptemp, filexmlold), path.join(ziptemp, filexmlnew));
       var tempxml = fsys.read(path.join(ziptemp, filexmlnew));
       tempxml = tempxml.replace(filexmlold.substring(0, filexmlold.length - 4), filexmlnew.substring(0, filexmlnew.length - 4));
+      tempxml = tempxml.replace(filexmloldl.substring(0, filexmloldl.length - 4), filexmlnewl.substring(0, filexmlnewl.length - 4));
       var root = await fsys.parse(path.join(ziptemp, filexmlnew)); // читаем версию файла и по
       if (filetype != 'H') {
         try{
@@ -382,7 +375,6 @@ var sender = async (filefull, sender) => { // обработка исходящ�
         } catch(error) {
           fn.eventLog(error, 'Не удалось прочитать версию файла/по', 'warning', 'processfile.sender');
         }
-        tempxml = tempxml.replace(filexmloldl.substring(0, filexmloldl.length - 4), filexmlnewl.substring(0, filexmlnewl.length - 4));
       } else {
         try {
           filever = root.ZL_LIST.ZGLV[0].VERSION[0];
@@ -396,7 +388,7 @@ var sender = async (filefull, sender) => { // обработка исходящ�
       if (settings.get('Validate')) { // проверка на соответствие схеме обмена
         var invalid = false;
         if (filetype == 'H') {
-          if (await fn.validate(path.join(ziptemp, filexmlnew), path.join(settings.folder('schemas'), 'schema_smp.xsd'), sender, settings.get('NoticeValidation'))) invalid = true;
+          if (await fn.validate(path.join(ziptemp, filexmlnew), path.join(settings.folder('schemas'), 'smp.xsd'), sender, settings.get('NoticeValidation')) || await fn.validate(path.join(ziptemp, filexmlnewl), path.join(settings.folder('schemas'), 'SMP_Person.xsd'), sender, settings.get('NoticeValidation'))) { invalid = true; }
         } else {
           if (typedis.includes(filetype)) {
             if (await fn.validate(path.join(ziptemp, filexmlnew), path.join(settings.folder('schemas'), 'DD_Med.xsd'), sender, settings.get('NoticeValidation')) || await fn.validate(path.join(ziptemp, filexmlnewl), path.join(settings.folder('schemas'), 'DD_Person.xsd'), sender, settings.get('NoticeValidation'))) { invalid = true; }
