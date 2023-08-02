@@ -325,6 +325,15 @@ var sender = async (filefull, sender) => { // обработка исходящ�
     var filexmloldl = 'L' + filenamew.toUpperCase().substring(filetype.length) + '.xml';
     var filexmlnewl = 'L' + newfilename + '.xml';
     if (typexml.includes(filetype)) { // блок для файлов с направлениями/госпитализациями
+      if (fileext == '.zip') { // распаковываем, если файл в архиве
+        var ziptemp = path.join(path.parse(filetemp).dir, path.parse(filetemp).name);
+        fsys.extract(filetemp, ziptemp); // распаковываем архив
+        fsys.remove(filetemp); // удаляем исходный архив - он нам больше не нужен
+        fsys.move(path.join(ziptemp, filexmlold), path.join(path.parse(filetemp).dir, path.parse(filetemp).name + '.xml')); // перемещаем распакованный файл на место архива
+        fsys.remove(ziptemp); // удаляем временную папку
+        filetemp = path.join(path.parse(filetemp).dir, path.parse(filetemp).name + '.xml');
+        filenamesend = path.parse(filenamesend).name + '.xml';
+      }
       var root = await fsys.parse(filetemp); // читаем версию файла и по
       try {
         filever = root.ZL_LIST.ZGLV[0].VERSION[0];
