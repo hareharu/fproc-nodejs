@@ -386,6 +386,8 @@ var sender = async (filefull, sender) => { // обработка исходящ�
       } else {
         try {
           filever = root.ZL_LIST.ZGLV[0].VERSION[0];
+          poname = root.ZL_LIST.ZGLV[0].PONAME[0];
+          pover = root.ZL_LIST.ZGLV[0].POVER[0];
         } catch(error) {
           fn.eventLog(error, 'Не удалось прочитать версию файла/по', 'warning', 'processfile.sender');
         }
