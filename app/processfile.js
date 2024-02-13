@@ -92,7 +92,7 @@ var processReestr = async (filetemp, filetype, prottype, filename, reestrdate, p
 }
 
 var processProf = async (filetemp, prottype, id_out, sender) => {
-  var prof = { dv220f: 0, dv220s: 0, pv230f: 0, pv230s: 0, ds035f: 0, ds035s: 0, ds223f: 0, ds223s: 0, pd231f: 0, pd231s: 0, pd232f: 0, pd232s: 0, pd233f: 0, pd233s: 0, dv325f: 0, dv325s: 0 };
+  var prof = { dv219f: 0, dv219s: 0, dv220f: 0, dv220s: 0, dv325f: 0, dv325s: 0, dv336f: 0, dv336s: 0, pv230f: 0, pv230s: 0, ds035f: 0, ds035s: 0, ds223f: 0, ds223s: 0, pd231f: 0, pd231s: 0, pd232f: 0, pd232s: 0, pd233f: 0, pd233s: 0 };
   var ziptemp = path.join(path.parse(filetemp).dir, path.parse(filetemp).name);
   var filetemp2 = path.join(ziptemp, path.parse(filetemp).base.substring(prottype.length));
   var ziptemp2 = path.join(path.parse(filetemp2).dir, path.parse(filetemp2).name);
@@ -112,26 +112,30 @@ var processProf = async (filetemp, prottype, id_out, sender) => {
           if (oplata == 1 || prottype == 'ER') {
             if (num_lap == 1) {
               switch (vis_obn) {
+                case 219: prof['dv219f'] += 1; break;
                 case 220: prof['dv220f'] += 1; break;
+                case 325: prof['dv325f'] += 1; break;
+                case 336: prof['dv336f'] += 1; break;
                 case 230: prof['pv230f'] += 1; break;
                 case 35:  prof['ds035f'] += 1; break;
                 case 223: prof['ds223f'] += 1; break;
                 case 231: prof['pd231f'] += 1; break;
                 case 232: prof['pd232f'] += 1; break;
                 case 233: prof['pd233f'] += 1; break;
-                case 325: prof['dv325f'] += 1; break;
                 default:
               }
             } else if (num_lap == 2) {
               switch (vis_obn)  {
+                case 219: prof['dv219s'] += 1; break;
                 case 220: prof['dv220s'] += 1; break;
+                case 325: prof['dv325s'] += 1; break;
+                case 336: prof['dv336s'] += 1; break;
                 case 230: prof['pv230s'] += 1; break;
                 case 35:  prof['ds035s'] += 1; break;
                 case 223: prof['ds223s'] += 1; break;
                 case 231: prof['pd231s'] += 1; break;
                 case 232: prof['pd232s'] += 1; break;
                 case 233: prof['pd233s'] += 1; break;
-                case 325: prof['dv325s'] += 1; break;
                 default:
               }
             }
@@ -143,13 +147,13 @@ var processProf = async (filetemp, prottype, id_out, sender) => {
   fsys.remove(ziptemp2);
   var filessend = await db.fproc.oneSync('SELECT count(id_out) FROM exam WHERE id_out = ?', [id_out]);
   if (filessend == 0) {
-    await db.fproc.runSync("INSERT INTO exam (id_out, sender, year, month, dv220f, dv220s, ds035f, ds035s, ds223f, ds223s, pv230f, pv230s, pd231f, pd231s, pd232f, pd232s, pd233f, pd233s, dv325f, dv325s) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [id_out, sender, re_year, re_mon, prof['dv220f'], prof['dv220s'], prof['ds035f'], prof['ds035s'], prof['ds223f'], prof['ds223s'], prof['pv230f'], prof['pv230s'], prof['pd231f'], prof['pd231s'], prof['pd232f'], prof['pd232s'], prof['pd233f'], prof['pd233s'], prof['dv325f'], prof['dv325s']]);
+    await db.fproc.runSync("INSERT INTO exam (id_out, sender, year, month, dv219f, dv219s, dv220f, dv220s, dv325f, dv325s, dv336f, dv336s, pv230f, pv230s, ds035f, ds035s, ds223f, ds223s, pd231f, pd231s, pd232f, pd232s, pd233f, pd233s) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [id_out, sender, re_year, re_mon, prof['dv219f'], prof['dv219s'], prof['dv220f'], prof['dv220s'], prof['dv325f'], prof['dv325s'], prof['dv336f'], prof['dv336s'], prof['pv230f'], prof['pv230s'], prof['ds035f'], prof['ds035s'], prof['ds223f'], prof['ds223s'], prof['pd231f'], prof['pd231s'], prof['pd232f'], prof['pd232s'], prof['pd233f'], prof['pd233s']]);
   } else {
     if (prottype == 'ER') {
-      current = await db.fproc.getSync("SELECT dv220f, dv220s, pv230f, pv230s, ds035f, ds035s, ds223f, ds223s, pd231f, pd231s, pd232f, pd232s, pd233f, pd233s, dv325f, dv325s FROM exam WHERE id_out = ?", [id_out]);
+      current = await db.fproc.getSync("SELECT dv219f, dv219s, dv220f, dv220s, dv325f, dv325s, dv336f, dv336s, pv230f, pv230s, ds035f, ds035s, ds223f, ds223s, pd231f, pd231s, pd232f, pd232s, pd233f, pd233s FROM exam WHERE id_out = ?", [id_out]);
       prof.forEach( vis => prof[vis] = current[vis] - prof[vis]);
     }
-    await db.fproc.runSync("UPDATE exam SET sender = ?, year = ?, month = ?, dv220f = ?, dv220s = ?, ds035f = ?, ds035s = ?, ds223f = ?, ds223s = ?, pv230f = ?, pv230s = ?, pd231f = ?, pd231s = ?, pd232f = ?, pd232s = ?, pd233f = ?, pd233s = ?, dv325f = ?, dv325s = ? WHERE id_out = ?", [sender, re_year, re_mon, prof['dv220f'], prof['dv220s'], prof['ds035f'], prof['ds035s'], prof['ds223f'], prof['ds223s'], prof['pv230f'], prof['pv230s'], prof['pd231f'], prof['pd231s'], prof['pd232f'], prof['pd232s'], prof['pd233f'], prof['pd233s'], prof['dv325f'], prof['dv325s'], id_out]);
+    await db.fproc.runSync("UPDATE exam SET sender = ?, year = ?, month = ?, dv219f = ?, dv219s = ?, dv220f = ?, dv220s = ?, dv325f = ?, dv325s = ?, dv336f = ?, dv336s = ?, pv230f = ?, pv230s = ?, ds035f = ?, ds035s = ?, ds223f = ?, ds223s = ?, pd231f = ?, pd231s = ?, pd232f = ?, pd232s = ?, pd233f = ?, pd233s = ? WHERE id_out = ?", [sender, re_year, re_mon, prof['dv219f'], prof['dv219s'], prof['dv220f'], prof['dv220s'], prof['dv325f'], prof['dv325s'], prof['dv336f'], prof['dv336s'], prof['pv230f'], prof['pv230s'], prof['ds035f'], prof['ds035s'], prof['ds223f'], prof['ds223s'], prof['pd231f'], prof['pd231s'], prof['pd232f'], prof['pd232s'], prof['pd233f'], prof['pd233s'], id_out]);
   }
   fsys.clear(ziptemp);
   fsys.remove(ziptemp);

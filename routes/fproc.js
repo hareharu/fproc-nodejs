@@ -153,10 +153,14 @@ router.get('/exam/:sender/:type/:year/:month', async (req, res, next) => { req.d
     params = { $year: req.params.year, $month: req.params.month === 'all' ? 13 : req.params.month }
     if (req.params.type === 'adult') {
       req.query = "select sd.dept as name,\
+                  COALESCE((SELECT SUM(dds.dv219f) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv219f), 0) || ')' AS dv219f,\
+                  COALESCE((SELECT SUM(dds.dv219s) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv219s), 0) || ')' AS dv219s,\
                   COALESCE((SELECT SUM(dds.dv220f) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv220f), 0) || ')' AS dv220f,\
                   COALESCE((SELECT SUM(dds.dv220s) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv220s), 0) || ')' AS dv220s,\
                   COALESCE((SELECT SUM(dds.dv325f) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv325f), 0) || ')' AS dv325f,\
                   COALESCE((SELECT SUM(dds.dv325s) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv325s), 0) || ')' AS dv325s,\
+                  COALESCE((SELECT SUM(dds.dv336f) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv336f), 0) || ')' AS dv336f,\
+                  COALESCE((SELECT SUM(dds.dv336s) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.dv336s), 0) || ')' AS dv336s,\
                   COALESCE((SELECT SUM(dds.pv230f) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.pv230f), 0) || ')' AS pv230f,\
                   COALESCE((SELECT SUM(dds.pv230s) FROM exam dds JOIN sender sds ON dds.sender = sds.code WHERE sds.dept = sd.dept AND dds.year = $year AND dds.month = $month), 0) || ' (' || COALESCE(SUM(dd.pv230s), 0) || ')' AS pv230s\
                   FROM exam dd LEFT JOIN sender sd ON dd.sender = sd.code\
@@ -182,10 +186,14 @@ router.get('/exam/:sender/:type/:year/:month', async (req, res, next) => { req.d
     params = { $year: req.params.year, $sender: req.params.sender }
     if (req.params.type === 'adult') {
       req.query = "SELECT dp.month AS name,\
+                  COALESCE(SUM(dp.dv219f), 0) AS dv219f,\
+                  COALESCE(SUM(dp.dv219s), 0) AS dv219s,\
                   COALESCE(SUM(dp.dv220f), 0) AS dv220f,\
                   COALESCE(SUM(dp.dv220s), 0) AS dv220s,\
                   COALESCE(SUM(dp.dv325f), 0) AS dv325f,\
                   COALESCE(SUM(dp.dv325s), 0) AS dv325s,\
+                  COALESCE(SUM(dp.dv336f), 0) AS dv336f,\
+                  COALESCE(SUM(dp.dv336s), 0) AS dv336s,\
                   COALESCE(SUM(dp.pv230f), 0) AS pv230f,\
                   COALESCE(SUM(dp.pv230s), 0) AS pv230s\
                   FROM exam dp LEFT JOIN sender sd ON dp.sender = sd.code\
